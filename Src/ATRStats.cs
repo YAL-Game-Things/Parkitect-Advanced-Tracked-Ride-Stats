@@ -12,7 +12,7 @@ using Mono.Security.Authenticode;
 namespace AdvancedTrackedRideStats {
     public class ATRStats : AbstractMod, IModSettings
     {
-        public const string VERSION_NUMBER = "1.0";
+        public const string VERSION_NUMBER = "1.0.1";
         public override string getIdentifier() => "cc.yal.AdvancedTrackedRideStats";
         public override string getName() => "Advanced Tracked Ride Stats";
         public override string getDescription() => @"Shows excitement contribution breakdown";
