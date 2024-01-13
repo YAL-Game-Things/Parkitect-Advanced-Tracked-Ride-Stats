@@ -24,7 +24,6 @@ namespace AdvancedTrackedRideStats {
         private string _modPath;
         public string _settingsFilePath;
 
-        public static ATRStatsConfig _config;
         public static ATRStats Instance;
         private Harmony _harmony;
         private string editNearFactor = "";
@@ -85,7 +84,7 @@ namespace AdvancedTrackedRideStats {
 			if (Event.current.isKey && Event.current.keyCode == KeyCode.Return) {
 				// Try to convert the input text to a float
 				if (float.TryParse(editNearFactor, out float result)) {
-					_config.nearFactor = Mathf.Clamp(result, 0, 1);
+					ATRStatsConfig.Instance.nearFactor = Mathf.Clamp(result, 0, 1);
 				}
 				// Clear the focus from the TextField
 				GUI.FocusControl(null);
@@ -93,50 +92,35 @@ namespace AdvancedTrackedRideStats {
 
 			GUILayout.EndVertical();
 		}
-        public void onSettingsOpened() {
-            // Get settings file path
-            _settingsFilePath = System.IO.Path.Combine(_modPath, "ta_settings.json");
 
-            // Load TA settings
+        public void onSettingsOpened() {
             reloadSettingsFromFile();
         }
 
-        public void onSettingsClosed()
-        {
-            // Save TA settings
+        public void onSettingsClosed() {
             saveSettingsToFile();
-
-            // Update the gizmo size value in the settings UI
             GUI.FocusControl(null);
         }
 
-        // Load or create TA settings file
-        private void reloadSettingsFromFile()
-        {
+        private void reloadSettingsFromFile() {
             if (File.Exists(_settingsFilePath)) {
                 // Load existing settings from JSON file
                 Debug.Log("[ATRS] Loading config!");
                 string json = File.ReadAllText(_settingsFilePath);
-                _config = JsonUtility.FromJson<ATRStatsConfig>(json);
+				ATRStatsConfig.Instance = JsonUtility.FromJson<ATRStatsConfig>(json);
             } else {
                 // Create new settings with default values
                 Debug.Log("[ATRS] Creating a new config!");
-                _config = new ATRStatsConfig();
-
-                // Load default values from TA Settings class
+                ATRStatsConfig.Instance = new ATRStatsConfig();
                 saveSettingsToFile();
             }
-            editNearFactor = _config.nearFactor.ToString();
+            editNearFactor = ATRStatsConfig.Instance.nearFactor.ToString();
         }
 
-        // Save values to TA settings file
         private void saveSettingsToFile()
         {
-            Debug.Log("Saving TA settings");
-            // Convert TA settings data to JSON format
-            string json = JsonUtility.ToJson(_config, true);
-
-            // Save JSON data to the TA settings file
+            Debug.Log("[ATRS] Saving config!");
+            string json = JsonUtility.ToJson(ATRStatsConfig.Instance, true);
             File.WriteAllText(_settingsFilePath, json);
         }
     }

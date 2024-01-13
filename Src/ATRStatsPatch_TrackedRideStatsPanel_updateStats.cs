@@ -131,26 +131,26 @@ namespace AdvancedTrackedRideStats {
 			var stringBuilder = new StringBuilder();
 			const string nf = "0.##";
 			const string nf1 = "0.#";
-			const string xv = "<pos=3.5em>";
-			const string xem = "<pos=7em>";
-			const string xvm = "<pos=10.5em>";
-			const string xvn = "<pos=14em>";
-			const string xed = "<pos=19em>";
-			const string xtxt = "<pos=22em>";
+			const string posValue = "<pos=3.5em>";
+			const string posBestContrib = "<pos=7em>";
+			const string posBestValue = "<pos=10.5em>";
+			const string posNearRange = "<pos=14em>";
+			const string posDelta = "<pos=19em>";
+			const string posDesc = "<pos=22em>";
 			stringBuilder.AppendLine("e"
-				+ xv + "v"
-				+ xem + "e<sup>max</sup>"
-				+ xvm + "v<sup>max</sup>"
-				+ xvn + "v<sup>near</sup>"
-				+ xed + "Δe"
-				+ xtxt + "<b>Description</b>"
+				+ posValue + "v"
+				+ posBestContrib + "e<sup>max</sup>"
+				+ posBestValue + "v<sup>max</sup>"
+				+ posNearRange + "v<sup>near</sup>"
+				+ posDelta + "Δe"
+				+ posDesc + "<b>Description</b>"
 			);
 
 			float duration = stats.duration;
 			float durationMins = duration / 60f;
 			float total = 0f;
 			float totalMax = 0f;
-			var nearFactor = ATRStats._config.nearFactor;
+			var nearFactor = ATRStatsConfig.Instance.nearFactor;
 			for (int step = -1; step <= 16; step++) {
 				string label = "?";
 				float value = 0f;
@@ -306,22 +306,22 @@ namespace AdvancedTrackedRideStats {
 				if (Mathf.Approximately(bestContrib, 0f) && Mathf.Approximately(contrib, 0) && bestContribText == null) continue;
 
 				stringBuilder.Append($"{(contrib * 100f).ToString(nf)}");
-				if (!float.IsNaN(value)) stringBuilder.Append($"{xv}{value.ToString(nf)}");
+				if (!float.IsNaN(value)) stringBuilder.Append($"{posValue}{value.ToString(nf)}");
 
 				//stringBuilder.Append("<b>" + label + ":</b> " + (outValue * 100f).ToString(nf));
 
 				if (!Mathf.Approximately(bestContrib, 0f) || bestContribText != null) {
-					stringBuilder.Append($"{xem}{bestContribText ?? (bestContrib * 100f).ToString(nf)}");
-					if (!float.IsNaN(bestValue)) stringBuilder.Append($"{xvm}{bestValue.ToString(nf)}");
+					stringBuilder.Append($"{posBestContrib}{bestContribText ?? (bestContrib * 100f).ToString(nf)}");
+					if (!float.IsNaN(bestValue)) stringBuilder.Append($"{posBestValue}{bestValue.ToString(nf)}");
 				}
 				if (nearText != null) {
-					stringBuilder.Append(xvn + nearText);
+					stringBuilder.Append(posNearRange + nearText);
 				}
 				if (!Mathf.Approximately(bestContrib, 0f) && showDelta) {
-					stringBuilder.Append($"{xed}{((bestContrib - contrib) * 100f).ToString(nf)}");
+					stringBuilder.Append($"{posDelta}{((bestContrib - contrib) * 100f).ToString(nf)}");
 				}
 
-				stringBuilder.Append($"{xtxt}<b>{label}</b>");
+				stringBuilder.Append($"{posDesc}<b>{label}</b>");
 				if (extraText != null) stringBuilder.Append($" [{extraText}]");
 
 				stringBuilder.AppendLine("");
@@ -329,9 +329,9 @@ namespace AdvancedTrackedRideStats {
 				totalMax += bestContrib;
 			} // for
 			stringBuilder.Append((total * 100f).ToString(nf));
-			stringBuilder.Append(xem + "~" + (totalMax * 100f).ToString(nf));
-			stringBuilder.Append(xed + ((totalMax - total) * 100f).ToString(nf));
-			stringBuilder.Append(xtxt + "<b>Total</b>");
+			stringBuilder.Append(posBestContrib + "~" + (totalMax * 100f).ToString(nf));
+			stringBuilder.Append(posDelta + ((totalMax - total) * 100f).ToString(nf));
+			stringBuilder.Append(posDesc + "<b>Total</b>");
 			stringBuilder.AppendLine(" (~" + (total / totalMax * 100f).ToString(nf) + "%)");
 			stringBuilder.AppendLine("<b>Last updated:</b> " + DateTime.Now.ToString());
 			stringBuilder.AppendLine("");

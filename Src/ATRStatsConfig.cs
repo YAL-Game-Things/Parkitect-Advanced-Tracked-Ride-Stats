@@ -4,6 +4,7 @@
 namespace AdvancedTrackedRideStats {
     [Serializable]
     public class ATRStatsConfig {
-        public float nearFactor = 0.95f;
+        public static ATRStatsConfig Instance = new ATRStatsConfig();
+		public float nearFactor = 0.95f;
     }
 }
